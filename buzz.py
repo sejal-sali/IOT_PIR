@@ -3,7 +3,7 @@ import time
 import pymongo
 from pymongo import MongoClient
 
-client = MongoClient('mongodb://localhost:3000/')  # Replace with your MongoDB URI
+client = MongoClient('mongodb://localhost:3000/')
 db = client.bus_data
 collection = db.seat_weights
 motion_data = db.motion_data
@@ -13,7 +13,7 @@ motion_data = db.motion_data
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-# Define GPIO pins for motion sensors
+# Defined GPIO pins for motion sensors
 SENSOR_ENTRANCE_PIN = 12  
 SENSOR_EXIT_PIN = 13   
 
