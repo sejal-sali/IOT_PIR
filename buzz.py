@@ -1,5 +1,12 @@
 import RPi.GPIO as GPIO
 import time
+import pymongo
+
+
+client = MongoClient('mongodb://localhost:3000/')  # Replace with your MongoDB URI
+db = client.bus_data
+collection = db.seat_weights
+motion_data = db.motion_data
 
 PIR_pin = 8
 Buzzer_pin = 12
