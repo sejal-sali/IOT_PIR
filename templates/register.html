@@ -5,6 +5,7 @@
     
   </head>
   <body>
+
     <!-- Integrated flash messages for displaying notifications. -->
     {% with messages = get_flashed_messages() %} {% if messages %} {% for
     message in messages %}
@@ -14,6 +15,38 @@
       {{ message }}
     </div>
     {% endfor %} {% endif %} {% endwith %}
+
+    <h1>Register</h1>
+
+    <!-- Implemented the registration form with input fields. -->
+    <form method="post" enctype="multipart/form-data">
+        <label for="passanger_name">Passenger Name:</label>
+        <input type="text" id="passanger_name" name="passanger_name" required />
+        <br />
+        <label for="passanger_id">Passanger ID:</label>
+        <input type="text" id="passanger_id" name="passanger_id" required />
+        <br />
+        <label for="passanger_dob">Passanger DOB:</label>
+        <input type="date" id="passanger_dob" name="passanger_dob" required />
+        <br />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <br />
+        <label for="passanger_photo">Passenger Photo:</label>
+        <input
+          type="file"
+          id="passanger_photo"
+          name="passanger_photo"
+          accept="image/*"
+          required
+        />
+        <br />
+        <input type="submit" value="Register" />
+      </form>
+
+      <p>
+        Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+      </p>
 
   </body>
 </html>
