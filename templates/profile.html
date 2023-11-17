@@ -3,6 +3,80 @@
   <head>
     <title>Profile</title>
 
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background-color: #f8f8f8;
+        }
+  
+        .message {
+          background-color: #d9534f;
+          color: white;
+          padding: 10px;
+          margin-bottom: 10px;
+        }
+  
+        .success-message {
+          background-color: #5cb85c;
+        }
+  
+        .info-message {
+          background-color: #5bc0de;
+        }
+  
+        .profile-container {
+          max-width: 600px;
+          margin: 20px auto;
+          padding: 20px;
+          background-color: white;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+  
+        .profile-image {
+          max-width: 100%;
+          height: auto;
+          border-radius: 5px;
+          margin-bottom: 10px;
+        }
+  
+        .profile-info {
+          margin-bottom: 20px;
+        }
+  
+        .profile-info strong {
+          display: inline-block;
+          width: 150px;
+          font-weight: bold;
+        }
+  
+        .profile-actions {
+          display: flex;
+          justify-content: space-between;
+        }
+  
+        .profile-actions form {
+          margin: 0;
+        }
+  
+        input[type="submit"] {
+          background-color: #d9534f;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: background-color 0.3s ease;
+        }
+  
+        input[type="submit"]:hover {
+          background-color: #c9302c;
+        }
+      </style>
+      
   </head>
   <body>
     {% with messages = get_flashed_messages() %} {% if messages %} {% for
