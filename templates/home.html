@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Bus</title>
+    <style>
+        body {
+          background-image: url(https://i.pinimg.com/originals/49/a9/c3/49a9c34181c6f4dd20369a2f454a66dc.jpg);
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+  
+        h1 {
+          text-align: center;
+          font-size: 40px;
+          color: white;
+        }
+  
+        p {
+          text-align: center;
+          font-size: 20px;
+          color: white;
+        }
+  
+        a {
+          text-decoration: none;
+          color: white;
+          font-size: 20px;
+        }
+  
+        button {
+          background-color: #000;
+          color: white;
+          font-size: 20px;
+          padding: 10px 20px;
+          border: none;
+          cursor: pointer;
+          text-align: center;
+          margin: 10px;
+          width: 10%;
+          display: block;
+          align-content: center;
+        }
+      </style> 
+  </head>
+
+  <body>
+    <h1>Smart Bus</h1>
+    <button><a href="{{ url_for('login') }}">Login</a></button>
+    <button><a href="{{ url_for('profile') }}">Profile</a></button>
+  </body>
+</html> 
