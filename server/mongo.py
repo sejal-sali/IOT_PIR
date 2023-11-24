@@ -8,6 +8,9 @@ from pubnub.enums import PNStatusCategory
 from dotenv import load_dotenv
 from pymongo import DESCENDING, MongoClient
 
+#app = Flask(__name__)
+alive = 0
+data = {}
 
 '''
 Global Data - Queue
@@ -16,8 +19,7 @@ Global Data - Queue
 load_dotenv()
 
 
-data_channel = os.environ.get('DATA_CHANNEL')
-history_channel = os.environ.get('PUBNUB_PUBLISH_KEY')
+my_channel = os.environ.get('CHANNEL')
 
 def setup_pubnub():
 	pnconfig = PNConfiguration()
@@ -106,7 +108,7 @@ def startSeat():
 	metaDataInit(coll)
 
 	#Step 3 - Set the parameters , max periodicity , random range
-	updateTime = 10 
+	updateTime = 2 
 	numOfSeats = 40
 
 	random.seed()
@@ -139,7 +141,7 @@ def startSeat():
 
 
 		# pubnub.publish('stockdata',json.dumps(broadcastData))
-		pubnub.publish().channel(data_channel).message(json.dumps(broadcastData)).sync()
+		pubnub.publish().channel(my_channel).message(json.dumps(broadcastData)).sync()
 
 
 '''
@@ -149,7 +151,7 @@ def metaDataInit(coll):
 	global metadataDescr
 
 	numOfSeats = 40
-	metadataDescr = [f'Seat{i}' for i in range(1, numOfSeats + 1)]
+	metadataDescr = [f'{i}' for i in range(1, numOfSeats + 1)]
 	
 	for seat_num in metadataDescr:
 		if coll.count_documents({'seat_num': seat_num}) == 0:
@@ -231,7 +233,7 @@ def my_publish_callback(envelope, status):
 
 if __name__ == '__main__':
 	startSeat()
-	pubnub.subscribe().channels(data_channel).execute()
+	pubnub.subscribe().channels(my_channel).execute()
 	pubnub.subscribe.channels(history_channel).execute()
 
 	
