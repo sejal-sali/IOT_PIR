@@ -1,3 +1,5 @@
+# Github copilot used for this file to check errors and fixes from errors
+
 import RPi.GPIO as GPIO
 import time
 import pymongo
@@ -73,8 +75,8 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 # Defined GPIO pins for motion sensors
-SENSOR_ENTRANCE_PIN = 12  
-SENSOR_EXIT_PIN = 13   
+SENSOR_ENTRANCE_PIN = 14  
+SENSOR_EXIT_PIN = 15  
 
 
 # Set up GPIO pins for motion sensors
@@ -103,7 +105,7 @@ def exit(channel):
 GPIO.add_event_detect(SENSOR_ENTRANCE_PIN, GPIO.RISING, callback=entrance, bouncetime=200)
 GPIO.add_event_detect(SENSOR_EXIT_PIN, GPIO.RISING, callback=exit, bouncetime=200)
 
-SEAT_SENSOR_PINS = [18]  
+SEAT_SENSOR_PINS = [23]  
 # Set up GPIO pins for pressure sensors
 for pin in SEAT_SENSOR_PINS:
     GPIO.setup(pin, GPIO.IN)
