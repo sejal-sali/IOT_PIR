@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import time, threading
+import time
 import pymongo
 from pymongo import MongoClient
 from pubnub.pnconfiguration import PNConfiguration
@@ -131,6 +131,4 @@ except KeyboardInterrupt:
     GPIO.cleanup()
 
 if __name__ == '__main__':
-    sensorsThread = threading.Thread(target=motion_detection)
-    sensorsThread.start()
     pubnub.subscribe().channels(my_channel).execute()
