@@ -88,12 +88,14 @@ exit_counter = 0
 def entrance(channel):
     global entrance_counter
     entrance_counter += 1
+    print("Entrance detected")
     motion_data.insert_one({"action": "entrance", "timestamp": time.time()})
     print(f"People entered: {entrance_counter}")
 
 def exit(channel):
     global exit_counter
     exit_counter += 1
+    print("Exit detected")
     motion_data.insert_one({"action": "exit", "timestamp": time.time()})
     print(f"People exited: {exit_counter}")
 
@@ -109,7 +111,6 @@ for pin in SEAT_SENSOR_PINS:
 previous_occupancy = [False] * len(SEAT_SENSOR_PINS)  # Assuming all seats start as unoccupied
 
 def read_seat_occupancy(pin):
-    
     occupancy = GPIO.input(pin)
     print(f"Reading from pin {pin}: {'Occupied' if occupancy else 'Empty'}")
     return occupancy
