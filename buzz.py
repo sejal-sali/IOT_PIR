@@ -109,10 +109,10 @@ for pin in SEAT_SENSOR_PINS:
 previous_occupancy = [False] * len(SEAT_SENSOR_PINS)  # Assuming all seats start as unoccupied
 
 def read_seat_occupancy(pin):
-    """
-    Returns True if the seat is occupied, False otherwise.
-    """
-    return GPIO.input(pin)
+    
+    occupancy = GPIO.input(pin)
+    print(f"Reading from pin {pin}: {'Occupied' if occupancy else 'Empty'}")
+    return occupancy
 
 try:
     while True:
