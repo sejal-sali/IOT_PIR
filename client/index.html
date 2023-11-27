@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bus Seats">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,400italic' rel='stylesheet' type='text/css'>
+    <link href="css/smartbus.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.sparkline.min.js"></script>
+    <script src="http://cdn.pubnub.com/pubnub-3.7.1.min.js"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.4.4.js"></script>
+</head>
+
+<body>
+    <div id="busdashboard">
+
+        <div class='section group header'>
+            <div class='col header_span_1'>BusSeats</div>
+            <div class='col header_span_3'>
+                <img style='width:100%;' src='img/bus.png' />
+            </div>
+        </div>
+        <div class='section group content' id='seatContainer'>
+            <!-- Dynamic seat content will be added here -->
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        var pubnub = PUBNUB.init({
+            publish_key: 'pub-c-09be69e5-3a31-4504-95ce-899d602f06cc',
+            subscribe_key: 'sub-c-10cae46a-f244-4649-b852-3917ec32addd',
+            uuid: 'c177bdd0-8acc-11ee-b9d1-0242ac120002'
+        });
+
+        var privateChannel = 'SmartBus-Channel';
+
+        //PubNub Callback for Price Counter Update
+        var updateStatus = function (msg) {
+            data = $.parseJSON(msg);
+            var seatId = data['seat_num'];
+            $('#seat' + seatId).html(data['value']);
+        }
+
+        $(document).ready(function () {
+            pubnub.subscribe({
+                channel: privateChannel,
+                message: updateStatus,
+                presence: function (presenceEvent) {
+                console.log("Presence Event:", presenceEvent);
+                },
+                error: function (error) {
+                console.error("PubNub Subscription Error:", error);
+                }
+        });
+
+        // Dynamically generate seat HTML
+        var seatContainer = $('#seatContainer');
+            for (var seatNumber = 1; seatNumber <= 40; seatNumber++) {
+                var seatHtml = '<div class="section group seatcounter">' +
+                    '<div class="col status">' +
+                    '<span class="seatnum">Seat ' + seatNumber + '</span></br>' +
+                    '<span id="seat' + seatNumber + '" class="statusval">0</span>' +
+                    '</div>' +
+                    '</div>';
+                seatContainer.append(seatHtml);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
