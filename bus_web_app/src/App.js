@@ -1,35 +1,63 @@
-import React, { useState } from 'react';
-import BusForm from './components/BusForm';
-import BusList from './components/BusList';
+// import './App.css';
+
+// function App() {
+//   return (
+//     <div className="App">
+//     </div>
+//   );
+// }
+
+// export default App;
+// App.js
+// import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+// import Buses from './components/Buses';
+// import Busseats from './components/Busseats'; // Import the BusSeats component
+// import Home from './components/Home';
+
+// const App = () => {
+//   const handleCheckBuses = (fromCity, toCity) => {
+//     // Logic to handle checking buses with selected cities
+//     console.log(`From: ${fromCity}, To: ${toCity}`);
+//   };
+
+//   return (
+//     <Router>
+//       <Switch>
+//         <Route exact path="/">
+//           <Home handleCheckBuses={handleCheckBuses} />
+//         </Route>
+//         <Route path="/buses" component={Buses} />
+//         <Route path="/seats/:busId" component={Busseats} /> {/* New Route for BusSeats */}
+
+//       </Switch>
+//     </Router>
+//   );
+// };
+
+// export default App;
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import Buses from './components/Buses';
+import Busseats from './components/Busseats'; // Updated import for BusSeats
+import Home from './components/Home';
 
 const App = () => {
-  const [selectedDestinations, setSelectedDestinations] = useState(null);
-
-  const handleFormSubmit = (destinations) => {
-    setSelectedDestinations(destinations);
-  };
-
-  const getBusList = () => {
-    // Fetch bus list based on selected destinations
-    // You can use an API or a predefined list
-    return [
-      { id: 1, name: 'Bus 1', icon: 'bus1.png' },
-      { id: 2, name: 'Bus 2', icon: 'bus2.png' },
-      // Add more buses as needed
-    ];
+  const handleCheckBuses = (fromCity, toCity) => {
+    // Logic to handle checking buses with selected cities
+    console.log(`From: ${fromCity}, To: ${toCity}`);
   };
 
   return (
-    <div>
-      <h1>Bus Booking App</h1>
-
-      {!selectedDestinations ? (
-        <BusForm onFormSubmit={handleFormSubmit} />
-      ) : (
-        <BusList buses={getBusList()} />
-      )}
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <Home handleCheckBuses={handleCheckBuses} />
+        </Route>
+        <Route exact path="/buses" component={Buses} /> {/* Updated path for Buses */}
+        <Route path="/seats/:busId" component={Busseats} /> {/* Updated component for BusSeats */}
+      </Switch>
+    </Router>
   );
 };
 
 export default App;
+
