@@ -1,0 +1,68 @@
+/* Home.css */
+
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f2f2f2;
+    width: 100%;
+  }
+  
+  .logo {
+    width: 200px;
+    height: auto;
+  }
+  
+  .bus-seats-container {
+    display: flex;
+  }
+  
+  .seat-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .seat {
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  
+  .selected {
+    background-color: #3498db;
+  }
+  
+  .indicators {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  
+  .indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .occupied {
+    background-color: lightgreen;
+  }
+  
+  .empty {
+    background-color: #ccc;
+  }
+  
