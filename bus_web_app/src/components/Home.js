@@ -1,9 +1,8 @@
 import { Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import logo from '../assets/logo.svg'; // Import the SVG file
+import logo from '../assets/logo.png'; // Import the SVG file
 import './Home.css';
-import YourComponent from './YourComponent';
 
 const Home = ({ handleCheckBuses }) => {
   const history = useHistory();
@@ -21,6 +20,13 @@ const Home = ({ handleCheckBuses }) => {
       unlisten(); // Clean up the listener when the component unmounts
     };
   }, [history]);
+  const handleLoginClick = () => {
+    history.push('/login'); // Redirect to login page
+  };
+
+  const handleSignupClick = () => {
+    history.push('/signup'); // Redirect to signup page
+  };
 
   const handleFromCityChange = (event) => {
     const selectedCity = event.target.value;
@@ -46,11 +52,11 @@ const Home = ({ handleCheckBuses }) => {
   return (
     <div>
       <div className="navbar">
-        {/* Logo in the center */}
-        <img src={logo} alt="Logo" width="200" height="50" />
-      </div>
+  <img src={logo} alt="Logo" className="logo" />
+</div>
+
       <div className='container'>
-        <h1>Bus Ticket Booking</h1>
+        <h1>View Occupancy</h1>
         <div className='form'>
           <label htmlFor="fromCity">From:</label>
           <select id="fromCity" value={fromCity} onChange={handleFromCityChange}>
@@ -61,8 +67,6 @@ const Home = ({ handleCheckBuses }) => {
               </option>
             ))}
           </select>
-
-          <YourComponent />
 
           <label htmlFor="toCity">To:</label>
           <select id="toCity" value={toCity} onChange={handleToCityChange}>
@@ -77,10 +81,14 @@ const Home = ({ handleCheckBuses }) => {
             <Button variant="outlined" onClick={handleCheckButtonClick}>
               Check Buses
             </Button>
+           
           </div>
+         
+
+            </div>
         </div>
       </div>
-    </div>
+   
   );
 };
 

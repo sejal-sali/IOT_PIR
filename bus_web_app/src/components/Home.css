@@ -31,13 +31,6 @@ body {
     font-family: Arial, sans-serif;
   }
   
-.navbar {
-  background-color: #bc4141;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
 .header {
   text-align: center;
   margin-top: 20px;
@@ -51,7 +44,7 @@ body {
 }
 
 .bus-cards {
-  display: flex;
+  display: flex;  
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
@@ -173,10 +166,13 @@ select {
 
 
 .navbar {
-  background-color: #bb3b3b;
+  background-color: #090808;
   color: white;
   padding: 10px;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 body {
@@ -195,38 +191,19 @@ body {
 }
 
 .seat {
-  display: flex;
+  display:flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ccc;
+  border: 1px solid #f7f6f6;
   width: 40px; /* Set the width of the seat */
   height: 40px; /* Set the height of the seat */
   font-size: 20px; /* Set the font size of the icon */
 }
-/* BusSeats.css */
-
-/* BusSeats.css */
-/* 
-.bus-seats-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.bus-seats-card {
-  width: 80%;
-  max-width: 600px;
-  padding: 20px;
-  text-align: center;
-  background-color: #f0f0f0;
-}
 
 .seats-layout {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 10px;
-  margin-top: 20px;
 }
 
 .seat {
@@ -236,7 +213,7 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 5px;
-  background-color: #ccc;
+  background-color: #fafafa;
   cursor: pointer;
 }
 
@@ -248,84 +225,79 @@ body {
   background-color: red;
 }
 
-.indicators {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-}
 
 .indicator {
   display: flex;
   align-items: center;
   gap: 5px;
 }
+.indicators{
+  align-items: center;
+  align-self: center;
+  margin-left: 40px;
 
-.indicator span {
-  font-size: 14px;
 }
 
 .selected-count {
   margin-top: 20px;
-} */
-/* BusSeats.css */
-
-.bus-seats-container {
+  margin-inline-start: 10px;
+}
+.external-seat-layout {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  gap: 10px; /* Adjust the gap between seats as needed */
 }
 
-.bus-seats-card {
-  width: 80%;
-  max-width: 600px;
-  padding: 20px;
-  text-align: center;
-  background-color: #f0f0f0;
-}
-
-.seats-layout {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 10px;
-  margin-top: 20px;
-}
-
+/* Add seat styling */
 .seat {
+  width: 30px;
+  height: 30px;
+  background-color: #fdfdfd; /* Default seat color */
+  margin: 5px; /* Adjust margin between seats as needed */
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 5px;
-  background-color: #ccc;
+  justify-content: center;
   cursor: pointer;
 }
 
 .selected {
+  background-color: #4caf50; /* Selected seat color */
+}
+
+
+.logo {
+  width: 200px;
+  height: 70px;
+  margin-left: 530px;
+}
+
+.login-btn {
+  display: flex;
+  gap: 10px;
+}
+.occupied {
   background-color: lightgreen;
 }
 
-.reserved {
-  background-color: red;
+.empty {
+  background-color: #ccc;
 }
 
-.indicators {
+.bus-seats-container {
   display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
+
+  flex-direction: column; /* Rotate the seat structure to be in a vertical column */
+  align-items: flex-start; /* Align the seat structure to the left */
+  margin-left: 20px; /* Adjust margin as needed */
+  margin-top: 50px; /* Remove top margin */
 }
 
-.indicator {
+.seat-row {
   display: flex;
-  align-items: center;
-  gap: 5px;
+  flex-direction: row-reverse; /* Reverse the order of seats in each row for vertical alignment */
 }
-
-.indicator span {
-  font-size: 14px;
-}
-
-.selected-count {
-  margin-top: 20px;
-}
+.abc {
+  display: flex;
+  width: 50%;
+  }
