@@ -49,7 +49,7 @@ const Login = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Enter your Email"
             />
           </div>
           <div>
@@ -58,7 +58,7 @@ const Login = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placehold er="Enter your password"
+              placehold er="Enter your Password"
             />
           </div>
           <button type="button" onClick={handleHome}>
