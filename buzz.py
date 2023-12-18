@@ -102,8 +102,8 @@ def exit(channel):
     print(f"People exited: {exit_counter}")
 
         # Add event detection for motion sensors
-GPIO.add_event_detect(SENSOR_ENTRANCE_PIN, GPIO.RISING, callback=entrance, bouncetime=200)
-GPIO.add_event_detect(SENSOR_EXIT_PIN, GPIO.RISING, callback=exit, bouncetime=200)
+GPIO.add_event_detect(SENSOR_ENTRANCE_PIN, GPIO.RISING, callback=entrance, bouncetime=50)
+GPIO.add_event_detect(SENSOR_EXIT_PIN, GPIO.RISING, callback=exit, bouncetime=50)
 
 SEAT_SENSOR_PINS = [23]  
 # Set up GPIO pins for pressure sensors
