@@ -23,7 +23,6 @@
             </div>
         </div>
         <div class='section group content' id='seatContainer'>
-            <!-- Dynamic seat content will be added here -->
         </div>
     </div>
     <script type="text/javascript">
@@ -36,7 +35,6 @@
 
         var privateChannel = 'SmartBus-Channel';
 
-        //PubNub Callback for Price Counter Update
         var updateStatus = function (msg) {
             data = $.parseJSON(msg);
             var seatId = data['seat_num'];

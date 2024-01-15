@@ -1,6 +1,6 @@
-import sys, threading, time, datetime, random, json, os, pymongo
-# import RPi.GPIO as GPIO
-from queue import Queue
+import sys, threading, time, datetime, random, json, os
+from flask import Flask, render_template
+import RPi.GPIO as GPIO
 from pubnub.pubnub import PubNub
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.callbacks import SubscribeCallback
@@ -8,18 +8,20 @@ from pubnub.enums import PNStatusCategory
 from dotenv import load_dotenv
 from pymongo import DESCENDING, MongoClient
 
-#app = Flask(__name__)
+app = Flask(__name__)
 alive = 0
 data = {}
 
-'''
-Global Data - Queue
-'''
+PIR_pin = 23
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PIR_pin, GPIO.IN)
 
 load_dotenv()
 
-
-my_channel = os.environ.get('CHANNEL')
+seat_channel = os.environ.get('SEAT_CHANNEL')
+motion_channel = os.environ.get('MOTION_CHANNEL')
 
 def setup_pubnub():
 	pnconfig = PNConfiguration()
@@ -31,9 +33,32 @@ def setup_pubnub():
 	return pubnub
 
 pubnub = setup_pubnub()
-'''
-Client Listener Thread
-'''
+
+@app.route("/")
+def index():
+   return render_template("index.html")
+
+
+@app.route("/keep_alive")
+def keep_alive():
+   global alive, data
+   alive += 1
+   keep_alive_count = str(alive)
+   data['keep_alive'] = keep_alive_count
+   parsed_json = json.dumps(data)
+   return str(parsed_json)
+
+
+@app.route("/status=<name>-<action>", methods=["POST"])
+def event(name, action):
+   global data
+   if name == "buzzer":
+       if action == "on":
+           data["alarm"] = True
+       elif action == "off":
+           data["alarm"] = False
+   return str("Ok")
+
 class MySubscribeCallback(SubscribeCallback):
     def presense(self, pubnub, presence):
         pass
@@ -46,38 +71,36 @@ class MySubscribeCallback(SubscribeCallback):
         elif status.category == PNStatusCategory.PNDecryptionErrorCategory:
             pass
 
-    def message(self, pubnub, message):
-        print("Received Historical Data Request: " + message.message)
+def message(self, pubnub, message):
+	print(message.message)
+
 		
         
 			
 pubnub.add_listener(MySubscribeCallback())
 
+def motion_detection():
+    print("Starting motion detection loop")
+    data["alarm"] = False
+    trigger = False
+    while True:
+        if GPIO.input(PIR_pin):
+            data['motion'] = 1
+            # beep(4)
+            publish(motion_channel, {"motion": "Motion Detected"})
+            trigger = True
+        elif trigger:
+            data['motion'] = 0
+            publish(motion_channel, {"motion": "No Motion Detected"})
+            trigger = False
+        # if data["alarm"]:
+        #     beep(2)
+        time.sleep(2)
+
 def publish(channel, message):
     pubnub.publish().channel(channel).message(message).pn_async(my_publish_callback)		
 
 
-class ClientListenerThread(threading.Thread):
-
-	def __init__(self,pnb):
-		threading.Thread.__init__(self)
-		self.mongoconn = MongoClient(os.environ.get('MONGODB_URI'))
-		self.db = self.mongoconn.stockdb
-		self.coll = self.db.stockcollection
-
-		self.pnb = pnb
-
-	def getLastUpdateTime(self,idxname):
-		
-		query = [{'$group': {'_id': '$name', 'maxValue': {'$max': '$time'}}}]
-
-		result = self.coll.aggregate(query)
-
-		for entry in result:
-			if (entry['_id'] == idxname):
-				return entry['maxValue'] 
-			
-		return None
 
 '''
 Description - Main server loop
@@ -94,82 +117,58 @@ Data will be stored in the following JSON format
 '''
 def startSeat():
 
-	#Step 1 - Initialize MongoDB & PubNub Connection
 	mongoconn = MongoClient(os.environ.get('MONGODB_URI'))
 	db        = mongoconn.seatdb
 	coll      = db.seatcollection
 	
-	#Setup index on time to fetch the latest update
 	coll.create_index([('time',DESCENDING)])
 
-	
-	
-	#Step 2 - Check and define the metadata ( index names )
-	metaDataInit(coll)
+	seatsDataInit(coll)
 
-	#Step 3 - Set the parameters , max periodicity , random range
-	updateTime = 2 
-	numOfSeats = 40
-
+	updateTime = 5 
 	random.seed()
 
-	#Step 4 - Setup the Queue and ClientListener Thread
-	# clientListener = ClientListenerThread(pubnub)
-	# clientListener.start()
-
-
-	#Step 5 - Setup PubNub Subscription for client requests
-
-	#Step 6 - Start the stock picking loop
 	while True:
-
 
 		time.sleep(updateTime)
 		
 		newSeatData = getUpdatedSeat(coll)
-
-		#Step 6.3 - Update the new price in DB
 		print ("New Seat Update " + str(newSeatData))
 		coll.insert_one(newSeatData)
+		MongoClient(os.environ.get('MONGODB_URI')).seatdb.motioncollection.insert_one({
+			"type": "motion",
+			"value": data['motion'],
+			"time": int(time.time())
+		})
+		
 
-		#Step 6.4 - Publish over Pubnub , stockdata channel
-		broadcastData = { 'seat_num' : newSeatData['seat_num'],
+		seatData = { 'seat_num' : newSeatData['seat_num'],
 						  'type'   : newSeatData['type'],
 						  'value'  : newSeatData['value'],
 						  'time' : newSeatData['time'],
 						}
 
-
-		# pubnub.publish('stockdata',json.dumps(broadcastData))
-		pubnub.publish().channel(my_channel).message(json.dumps(broadcastData)).sync()
+		pubnub.publish().channel(seat_channel).message(json.dumps(seatData)).sync()
 
 
-'''
-Description - Populate the index names to track and initial database
-'''
-def metaDataInit(coll):
-	global metadataDescr
+def seatsDataInit(coll):
+	global seatdataDescr
 
 	numOfSeats = 40
-	metadataDescr = [f'{i}' for i in range(1, numOfSeats + 1)]
-	
-	for seat_num in metadataDescr:
-		if coll.count_documents({'seat_num': seat_num}) == 0:
-			seat = {'seat_num': seat_num, 'type': "pressure", 'value': 0, 'time': 1}
+	seatdataDescr = [i for i in range(1, numOfSeats + 1)]
+	for seat_num in seatdataDescr:
+		count = coll.count_documents({'seat_num': seat_num})
+		if count == 0:
+			seat = {'seat_num': int(seat_num), 'type': "pressure", 'value': 0, 'time': 1705252950}
 			coll.insert_one(seat)
+	print("Seats initialization complete")
 
 
 
-'''
-Description - This function simulates the stock index price update
-			  Gets the new price details for indices based on random
-			  selection
 
-Return      - Returns the JSON formatted index name, price , delta and time
-'''
 def getUpdatedSeat(coll):
-	#Random select the index whose seat is to be updated
-	seat_num = random.choice(metadataDescr)
+	# seat_num = random.choice(seatdataDescr)
+	seat_num = 2
 
 	currentSeat = getCurrentSeat(coll,seat_num)
 	if(currentSeat == 0):
@@ -177,11 +176,7 @@ def getUpdatedSeat(coll):
 	else:
 		newSeatStatus = 0
 	
-	print ("New Seat for " + str(seat_num) + " : " + str(newSeatStatus))
-
-	#Get the current time of update
-	updateTime = getCurrentTimeInSecs()
-	#Return the new index price
+	updateTime = int(time.time())
 	return {
 		"seat_num" 	 : seat_num  ,
 		"type"   	 : "pressure"  ,
@@ -201,17 +196,6 @@ def getCurrentSeat(coll,seat_num):
 			return val
 	return None
 
-'''
-Description - This function fetches the most recent price update of 
-              an index idxname 
-
-Returns -  Last updated seat
-'''
-
-
-'''
-Description - Get the current system time in unix timestamp format
-'''
 def getCurrentTimeInSecs():
 	
 	dtime = datetime.datetime.now()
@@ -224,16 +208,24 @@ def getCurrentTimeInSecs():
 PubNub Callback for incoming requests on global listening channel
 '''
 def my_publish_callback(envelope, status):
-    # Check whether request successfully completed or not
-    print("my_publish_callback")
     if not status.is_error():
-        print("Queue request successfully completed : " + envelope)
+        # print(envelope)
+        pass
     else:
-        print("Error in receiving Historical Data Request : " + status)
+        print(status)
+        
 
 if __name__ == '__main__':
-	startSeat()
-	pubnub.subscribe().channels(my_channel).execute()
-	pubnub.subscribe.channels(history_channel).execute()
+    sensorsThread = threading.Thread(target=motion_detection)
+    seatsThread = threading.Thread(target=startSeat)
+    
+    seatsThread.start()
+    sensorsThread.start()
+	
+    pubnub.subscribe().channels(seat_channel).execute()
+    pubnub.subscribe().channels(motion_channel).execute()
+    
+    app.run(host="0.0.0.0", port="5000")
+    
 
 	
